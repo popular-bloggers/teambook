@@ -16,9 +16,12 @@ jobs:
         with:
           repository: popular-bloggers/notebook-generator
           path: notebook-generator
+      - run: sudo apt-get install texlive texlive-latex-extra texlive-lang-cyrillic
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
       - run: npm install -g notebook-generator
       - run: ./build.sh
-      
+      - uses: actions/upload-artifact@v2
+        with:
+          path: notebook.pdf
