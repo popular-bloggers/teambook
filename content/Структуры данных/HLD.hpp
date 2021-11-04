@@ -1,42 +1,56 @@
 //
-// HLD на одном дереве (дерево отрезков на !отрезках!)
-// Author: Kon567889
-// https://codeforces.com/group/9MnDgcj9Ka/contest/321438/submission/110920615
+//  Heavy-Light Decomposition
+//  Позволяет выполнять запросы на путях в дереве
+//  Источник: https://codeforces.com/blog/entry/53170
+//
 
-void dfs1(int v, int p) {
-  pred[v] = p;
-  if (count(all(g[v]), p)) g[v].erase(find(all(g[v]), p));
-  sz[v] = 1;
-  for (auto &i : g[v]) {
-    dfs1(i, v);
-    sz[v] += sz[i];
-    if (sz[i] > sz[g[v][0]]) swap(i, g[v][0]);
+#include <Дерево отрезков.hpp>
+
+struct HLD {
+  int n, t = 0;
+  vector<vector<int>> g;
+  vector<int> tin, siz, par, h, up;
+
+  SegmentTree st;
+
+  HLD(int n, const vector<vector<int>> &g)
+      : n(n), g(g), tin(n), siz(n, 1), par(n), h(n), up(n), st(n) {
+    par[0] = -1, h[0] = 0, up[0] = 0;
+    dfs_sz(0);
+    dfs_up(0);
   }
-}
-void dfs2(int v, int p) {
-  tin[v] = timer++;
-  order.push_back(v);
-  for (auto &i : g[v]) {
-    up[i] = (i == g[v][0] ? up[v] : i);
-    dfs2(i, v);
-  }
-}
-void updVertical(int from, int add) { // upd path from -> 0
-  ll ans = 0;
-  while (true) {
-    if (up[from] == 0) {
-      tree.upd(1, tin[0], tin[from], add);
-      break;
+
+  void dfs_sz(int v) {
+    if (par[v] != -1) g[v].erase(find(all(g[v]), p));
+    for (int &u : g[v]) {
+      par[u] = v, h[u] = h[v] + 1;
+      dfs_sz(u);
+      siz[v] += siz[u];
+      if (siz[u] > siz[g[v][0]]) swap(u, g[v][0]);
     }
-    tree.upd(1, tin[up[from]], tin[from], add);
-    from = pred[up[from]];
   }
+
+  void dfs_up(int v) {
+    tin[v] = t++;
+    for (int u : g[v]) {
+      if (u == g[v][0])
+        up[u] = up[v];
+      else
+        up[u] = u;
+      dfs_up(u);
+    }
+  }
+
+  int get_path(int v, int u) {
+    int res = 0;
+    for (; up[v] != up[u]; v = par[up[v]]) {
+      if (h[up[v]] < h[up[u]]) swap(v, u);
+      res += st.get(tin[up[v]], tin[v] + 1);
+    }
+    if (h[v] > h[u]) swap(v, u);
+    res += st.get(tin[v], tin[u] + 1);
+    return res;
+  }
+
+  int get_subtree(int v) { return st.get(tin[v], tin[v] + siz[v]); }
 }
-void updDeep(int v, int add) { // upd subtree of v
-  tree.upd(1, tin[v], tin[v] + sz[v] - 1, add); // tree -- дерево отрезков
-}
-// build hld
-for(int i = 0; i < n; i++) {
-  b[tin[i]] = a[i];
-}
-build(n, b);

@@ -19,7 +19,7 @@ struct AhoCorasick {
       memset(to, -1, sizeof to), memset(nxt, -1, sizeof nxt);
     }
   };
-  vector <Node> aho;
+  vector<Node> aho;
   int add(const string &s, int ptr = 0, int v = 0) {
     if (ptr == s.size()) {
       aho[v].isTerm = true;
@@ -27,7 +27,7 @@ struct AhoCorasick {
     }
     int to = s[ptr] - 'A';
     if (aho[v].to[to] == -1) {
-      aho[v].to[to] = (int) aho.size();
+      aho[v].to[to] = (int)aho.size();
       aho.emplace_back();
       aho.back().parent = v, aho.back().c = to;
     }
