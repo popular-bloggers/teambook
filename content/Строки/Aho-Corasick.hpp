@@ -19,8 +19,8 @@ struct AhoCorasick {
       memset(to, -1, sizeof to), memset(nxt, -1, sizeof nxt);
     }
   };
-  std::vector <Node> aho;
-  int add(const std::string &s, int ptr = 0, int v = 0) {
+  vector <Node> aho;
+  int add(const string &s, int ptr = 0, int v = 0) {
     if (ptr == s.size()) {
       aho[v].isTerm = true;
       return v;
