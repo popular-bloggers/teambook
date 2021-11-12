@@ -16,7 +16,7 @@ struct HLD {
     dfs_up(0);
   }
   void dfs_sz(int v) {
-    if (par[v] != -1) g[v].erase(find(all(g[v]), p));
+    if (par[v] != -1) g[v].erase(find(all(g[v]), par[v]));
     for (int &u : g[v]) {
       par[u] = v, h[u] = h[v] + 1;
       dfs_sz(u);

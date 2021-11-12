@@ -14,7 +14,7 @@ struct FenwickTree {
   }
   int get(int r) {  // сумма на отрезке [1; r]
     int res = 0;
-    for (; r > 0; i -= F(i)) res += t[i];
+    for (; r > 0; r -= F(r)) res += t[r];
     return res;
   }
   int lower_bound(int sum) {  // вернёт первое r такое, что get(r) >= sum
