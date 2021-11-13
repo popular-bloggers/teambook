@@ -9,7 +9,7 @@ struct FenwickTree {
   int n;
   vector<int> t;
   FenwickTree(int n) : n(n), t(n + 1, 0) {}
-  void update(int i, int d) {  // a[i] += d, i \in [1; n]
+  void update(int i, int d) {  // a[i] += d, i in [1; n]
     for (; i <= n; i += F(i)) t[i] += d;
   }
   int get(int r) {  // сумма на отрезке [1; r]
